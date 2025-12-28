@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grande Auto Peças</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primaria:#120a1a;
+  --secundaria:#6b2de0;
+  --fundo:#0a0a0a;
+  --card:#1a1a1a;
+  --texto:#f5f5f5;
+  --texto-sec:#b0b0b0;
+  --novo:#00ffcc;
+  --promocao:#ff2d95;
+}
+
+body{margin:0;font-family:'Montserrat',sans-serif;background:var(--fundo);color:var(--texto);scroll-behavior:smooth;}
+header{background:var(--primaria);padding:15px 25px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 10px rgba(0,0,0,0.5);}
+.logo{display:flex;align-items:center;gap:15px;position:relative;}
+.logo h1{font-weight:800;letter-spacing:1px;margin:0;font-family:'Roboto Slab', serif; background: linear-gradient(90deg,#6b2de0,#ff2d95,#00ffcc,#6b2de0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: neonGlow 3s linear infinite;}
+.logo svg{width:50px;height:50px;animation:logoRotate 6s linear infinite;}
+.search-box{display:flex;align-items:center;background:var(--card);border-radius:25px;padding:5px 10px;box-shadow:0 2px 10px rgba(0,0,0,0.5);}
+.search-box input{border:none;background:none;color:#fff;padding:5px 10px;border-radius:20px;outline:none;width:200px;}
+.search-box button{background:none;border:none;color:var(--secundaria);cursor:pointer;font-size:18px;}
+.container{display:flex;max-width:1300px;margin:20px auto;padding:0 20px;gap:20px;}
+.sidebar{width:200px;background:var(--card);padding:15px;border-radius:15px;box-shadow:0 3px 10px rgba(0,0,0,0.5);}
+.sidebar h3{color:var(--secundaria);margin-top:0;margin-bottom:10px;}
+.sidebar ul{list-style:none;padding-left:0;}
+.sidebar ul li{padding:8px 0;cursor:pointer;color:var(--texto-sec);}
+.sidebar ul li:hover{color:var(--secundaria);font-weight:600;}
+.main-content{flex:1;}
+.produtos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px;perspective:1000px;}
+.card{background:var(--card);border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.5);transform-style:preserve-3d;transition: transform 0.6s, box-shadow 0.3s;opacity:0;transform:translateY(30px);cursor:pointer;position:relative;height:300px;}
+.card:hover{transform:translateY(-6px) rotateY(180deg);box-shadow:0 10px 25px rgba(107,45,224,0.5);}
+.card-inner{position:absolute;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d;}
+.card-front, .card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;text-align:center;}
+.card-front .icone-cat{width:25px;height:25px;margin-bottom:8px;font-size:25px;}
+.card-front h3{margin:10px 0 5px;font-size:16px;}
+.card-front .preco{color:var(--secundaria);font-weight:bold;font-size:15px;}
+.card-front .compatibilidade{font-size:12px;color:var(--texto-sec);}
+.card-back{background:var(--primaria);color:#fff;transform:rotateY(180deg);font-size:14px;padding:15px;display:flex;align-items:center;justify-content:center;line-height:1.3;}
+.tooltip{position:relative;display:inline-block;}
+.tooltip .tooltiptext{visibility:hidden;width:200px;background-color:var(--primaria);color:#fff;text-align:center;padding:8px;border-radius:6px;position:absolute;z-index:1;bottom:110%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.3s;font-size:12px;}
+.tooltip:hover .tooltiptext{visibility:visible;opacity:1;}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:var(--secundaria);color:var(--texto);cursor:pointer;font-weight:700;font-size:14px;transition:0.3s;margin-top:12px;}
+button:hover{background:linear-gradient(45deg,#6b2de0,#4a00e0);transform:scale(1.03);}
+.badge{position:absolute;top:10px;left:10px;padding:5px 10px;border-radius:6px;color:#fff;font-size:12px;font-weight:bold;}
+.badge.novo{background:var(--novo);}
+.badge.promocao{background:var(--promocao);}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;}
+.modal-content{background:var(--card);padding:25px;border-radius:15px;max-width:500px;width:90%;text-align:left;position:relative;}
+.modal-content h3{color:var(--secundaria);}
+.modal-content p{margin-top:10px;color:#ddd;}
+.close{position:absolute;top:10px;right:15px;font-size:22px;color:var(--secundaria);cursor:pointer;font-weight:bold;}
+.sac-fixo{position:fixed;bottom:20px;right:20px;background:var(--secundaria);color:#fff;padding:15px 20px;border-radius:50px;box-shadow:0 4px 15px rgba(0,0,0,0.5);font-weight:700;cursor:pointer;z-index:100;transition:0.3s;}
+.sac-fixo:hover{background:linear-gradient(45deg,#6b2de0,#4a00e0);}
+.carrinho-fixo{position:fixed;top:100px;right:20px;width:300px;background:var(--card);padding:20px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.5);z-index:90;}
+.carrinho-fixo h2{margin-top:0;}
+.carrinho-fixo ul{list-style:none;padding-left:0;max-height:300px;overflow-y:auto;margin-bottom:10px;}
+.carrinho-fixo button{width:100%;}
+.categoria-title{margin-top:30px;margin-bottom:10px;font-size:18px;color:var(--secundaria);border-bottom:1px solid var(--secundaria);padding-bottom:5px;}
+@keyframes logoRotate{0%{transform:rotate(0deg);}50%{transform:rotate(5deg) scale(1.05);}100%{transform:rotate(0deg);}}
+@keyframes fadeInUp{to {opacity:1; transform:translateY(0);}}
+@keyframes neonGlow{0%,100%{background-position:0 0;}50%{background-position:200% 0;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="#6b2de0"/>
+      <circle cx="50" cy="50" r="40" fill="#120a1a"/>
+      <text x="50" y="62" text-anchor="middle" font-size="42" fill="#6b2de0" font-weight="bold">G</text>
+    </svg>
+    <h1>GRANDE <span>AUTO PEÇAS</span></h1>
+  </div>
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Pesquisar produto...">
+    <button onclick="pesquisar()">🔍</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="sidebar">
+    <h3>Categorias</h3>
+    <ul id="categorias-lista"></ul>
+  </div>
+  <div class="main-content">
+    <div id="produtos-container"></div>
+  </div>
+
+  <div class="carrinho-fixo">
+    <h2>🛒 Carrinho</h2>
+    <ul id="lista"></ul>
+    <p><strong>Total:</strong> R$ <span id="total">0.00</span></p>
+    <button onclick="finalizar()">Finalizar Compra</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModal()">&times;</span>
+    <h3 id="modal-title"></h3>
+    <p id="modal-text"></p>
+  </div>
+</div>
+
+<div class="sac-fixo" onclick="window.open('https://wa.me/5531993365096','_blank')">
+  SAC WhatsApp
+</div>
+
+<script>
+let carrinho=[], total=0;
+let produtos=[
+  // 40 produtos de motos (mantidos)
+  {id:1,nome:"Filtro de Óleo",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Filtro de óleo de alta eficiência.",categoria:"Filtros"},
+  {id:2,nome:"Velas de Ignição",preco:30,compat:["Honda CG","Yamaha YBR"],icone:"⚡",info:"Velas de alto desempenho.",categoria:"Motor"},
+  {id:3,nome:"Pastilha de Freio",preco:70,compat:["Honda CG","Yamaha YBR"],icone:"🛑",info:"Pastilhas que garantem frenagem segura.",categoria:"Freios"},
+  {id:4,nome:"Óleo de Motor 1L",preco:25,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Óleo lubrificante sintético.",categoria:"Óleo"},
+  {id:5,nome:"Bateria Moto",preco:180,compat:["Honda CG","Yamaha YBR"],icone:"🔋",info:"Bateria durável para sua moto.",categoria:"Elétrico"},
+  {id:6,nome:"Corrente de Transmissão",preco:90,compat:["Honda CG","Yamaha YBR"],icone:"⛓️",info:"Corrente de alta resistência.",categoria:"Transmissão"},
+  {id:7,nome:"Amortecedor Dianteiro",preco:250,compat:["Honda CG","Yamaha YBR"],icone:"🛠️",info:"Amortecedor ajustável e resistente.",categoria:"Suspensão"},
+  {id:8,nome:"Pneu Dianteiro 90/90",preco:220,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu de alta aderência.",categoria:"Pneus"},
+  {id:9,nome:"Pneu Traseiro 120/80",preco:260,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu resistente e seguro.",categoria:"Pneus"},
+  {id:10,nome:"Espelho Retrovisor",preco:45,compat:["Honda CG","Yamaha YBR"],icone:"🔍",info:"Espelho retrovisor ajustável.",categoria:"Acessórios"},
+  {id:11,nome:"Farol Dianteiro LED",preco:180,compat:["Honda CG","Yamaha YBR"],icone:"💡",info:"Farol potente e durável.",categoria:"Iluminação"},
+  {id:12,nome:"Lanterna Traseira",preco:90,compat:["Honda CG","Yamaha YBR"],icone:"🔴",info:"Lanterna traseira com LED.",categoria:"Iluminação"},
+  {id:13,nome:"Filtro de Ar",preco:60,compat:["Honda CG","Yamaha YBR"],icone:"🌬️",info:"Filtro de ar eficiente.",categoria:"Filtros"},
+  {id:14,nome:"Suporte de Placa",preco:35,compat:["Honda CG","Yamaha YBR"],icone:"🪧",info:"Suporte para placa.",categoria:"Acessórios"},
+  {id:15,nome:"Buzina",preco:40,compat:["Honda CG","Yamaha YBR"],icone:"📢",info:"Buzina potente.",categoria:"Elétrico"},
+  {id:16,nome:"Manete de Freio",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"✋",info:"Manete ajustável e resistente.",categoria:"Freios"},
+  {id:17,nome:"Manete de Embreagem",preco:55,compat:["Honda CG","Yamaha YBR"],icone:"✋",info:"Manete de embreagem ergonômico.",categoria:"Freios"},
+  {id:18,nome:"Pastilha de Freio Traseira",preco:75,compat:["Honda CG","Yamaha YBR"],icone:"🛑",info:"Garantia de frenagem segura.",categoria:"Freios"},
+  {id:19,nome:"Cabo de Embreagem",preco:35,compat:["Honda CG","Yamaha YBR"],icone:"🧵",info:"Cabo resistente e durável.",categoria:"Transmissão"},
+  {id:20,nome:"Cabo de Acelerador",preco:30,compat:["Honda CG","Yamaha YBR"],icone:"🧵",info:"Cabo preciso para aceleração.",categoria:"Motor"},
+  {id:21,nome:"Filtro de Combustível",preco:45,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Filtro que protege o motor.",categoria:"Filtros"},
+  {id:22,nome:"Pastilha de Freio Dianteira",preco:80,compat:["Honda CG","Yamaha YBR"],icone:"🛑",info:"Pastilha dianteira de qualidade.",categoria:"Freios"},
+  {id:23,nome:"Correia de Transmissão",preco:100,compat:["Honda CG","Yamaha YBR"],icone:"⛓️",info:"Correia durável e confiável.",categoria:"Transmissão"},
+  {id:24,nome:"Filtro de Óleo Sintético",preco:65,compat:["Honda CG","Yamaha YBR"],icone:"🛢️",info:"Filtro de óleo sintético premium.",categoria:"Filtros"},
+  {id:25,nome:"Velas de Ignição Premium",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"⚡",info:"Velas para alto desempenho.",categoria:"Motor"},
+  {id:26,nome:"Bateria Selada",preco:200,compat:["Honda CG","Yamaha YBR"],icone:"🔋",info:"Bateria sem manutenção.",categoria:"Elétrico"},
+  {id:27,nome:"Pneu Dianteiro 100/90",preco:240,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu dianteiro resistente.",categoria:"Pneus"},
+  {id:28,nome:"Pneu Traseiro 130/90",preco:280,compat:["Honda CG","Yamaha YBR"],icone:"🛞",info:"Pneu traseiro durável.",categoria:"Pneus"},
+  {id:29,nome:"Farol Neblina",preco:150,compat:["Honda CG","Yamaha YBR"],icone:"💡",info:"Farol auxiliar de LED.",categoria:"Iluminação"},
+  {id:30,nome:"Interruptor de Luz",preco:40,compat:["Honda CG","Yamaha YBR"],icone:"🔌",info:"Interruptor confiável.",categoria:"Elétrico"},
+  {id:31,nome:"Amortecedor Traseiro",preco:260,compat:["Honda CG","Yamaha YBR"],icone:"🛠️",info:"Amortecedor traseiro ajustável.",categoria:"Suspensão"},
+  {id:32,nome:"Guarda-lamas Dianteiro",preco:70,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Proteção contra respingos.",categoria:"Acessórios"},
+  {id:33,nome:"Guarda-lamas Traseiro",preco:75,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Proteção traseira durável.",categoria:"Acessórios"},
+  {id:34,nome:"Espelho Retrovisor Direito",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"🔍",info:"Espelho lateral direito.",categoria:"Acessórios"},
+  {id:35,nome:"Espelho Retrovisor Esquerdo",preco:50,compat:["Honda CG","Yamaha YBR"],icone:"🔍",info:"Espelho lateral esquerdo.",categoria:"Acessórios"},
+  {id:36,nome:"Protetor de Corrente",preco:60,compat:["Honda CG","Yamaha YBR"],icone:"🛡️",info:"Proteção da corrente.",categoria:"Transmissão"},
+  {id:37,nome:"Bagageiro Traseiro",preco:120,compat:["Honda CG","Yamaha YBR"],icone:"🎒",info:"Bagageiro lateral resistente.",categoria:"Acessórios"},
+  {id:38,nome:"Escape Esportivo",preco:400,compat:["Honda CG","Yamaha YBR"],icone:"🎵",info:"Escape com som esportivo.",categoria:"Motor"},
+  {id:39,nome:"Protetor de Mão",preco:80,compat:["Honda CG","Yamaha YBR"],icone:"✋",info:"Proteção para suas mãos.",categoria:"Acessórios"},
+  {id:40,nome:"Cabo de Freio Traseiro",preco:40,compat:["Honda CG","Yamaha YBR"],icone:"🧵",info:"Cabo de freio confiável.",categoria:"Freios"},
+
+  // 40 novos produtos de carros
+  {id:41,nome:"Filtro de Óleo Carro",preco:90,compat:["Ford Ka","Chevrolet Onix"],icone:"🛢️",info:"Filtro de óleo de alta eficiência para carros.",categoria:"Filtros"},
+  {id:42,nome:"Velas de Ignição Carro",preco:60,compat:["Ford Ka","Chevrolet Onix"],icone:"⚡",info:"Velas de alto desempenho para carros.",categoria:"Motor"},
+  {id:43,nome:"Pastilha de Freio Carro Dianteira",preco:120,compat:["Ford Ka","Chevrolet Onix"],icone:"🛑",info:"Pastilhas dianteiras de qualidade.",categoria:"Freios"},
+  {id:44,nome:"Pastilha de Freio Carro Traseira",preco:110,compat:["Ford Ka","Chevrolet Onix"],icone:"🛑",info:"Pastilhas traseiras confiáveis.",categoria:"Freios"},
+  {id:45,nome:"Óleo de Motor 5L",preco:90,compat:["Ford Ka","Chevrolet Onix"],icone:"🛢️",info:"Óleo sintético para motor de carro.",categoria:"Óleo"},
+  {id:46,nome:"Bateria Carro",preco:350,compat:["Ford Ka","Chevrolet Onix"],icone:"🔋",info:"Bateria selada de longa duração.",categoria:"Elétrico"},
+  {id:47,nome:"Cabo de Velas",preco:45,compat:["Ford Ka","Chevrolet Onix"],icone:"🧵",info:"Cabo de vela de qualidade.",categoria:"Motor"},
+  {id:48,nome:"Amortecedor Dianteiro Carro",preco:500,compat:["Ford Ka","Chevrolet Onix"],icone:"🛠️",info:"Amortecedor resistente e ajustável.",categoria:"Suspensão"},
+  {id:49,nome:"Amortecedor Traseiro Carro",preco:520,compat:["Ford Ka","Chevrolet Onix"],icone:"🛠️",info:"Amortecedor traseiro de qualidade.",categoria:"Suspensão"},
+  {id:50,nome:"Pneu Dianteiro 195/55",preco:400,compat:["Ford Ka","Chevrolet Onix"],icone:"🛞",info:"Pneu dianteiro resistente e durável.",categoria:"Pneus"},
+  {id:51,nome:"Pneu Traseiro 195/55",preco:420,compat:["Ford Ka","Chevrolet Onix"],icone:"🛞",info:"Pneu traseiro de alta aderência.",categoria:"Pneus"},
+  {id:52,nome:"Espelho Retrovisor Carro",preco:120,compat:["Ford Ka","Chevrolet Onix"],icone:"🔍",info:"Espelho lateral ajustável.",categoria:"Acessórios"},
+  {id:53,nome:"Farol Dianteiro Carro",preco:650,compat:["Ford Ka","Chevrolet Onix"],icone:"💡",info:"Farol potente com LED.",categoria:"Iluminação"},
+  {id:54,nome:"Lanterna Traseira Carro",preco:350,compat:["Ford Ka","Chevrolet Onix"],icone:"🔴",info:"Lanterna traseira com LED.",categoria:"Iluminação"},
+  {id:55,nome:"Filtro de Ar Carro",preco:80,compat:["Ford Ka","Chevrolet Onix"],icone:"🌬️",info:"Filtro de ar eficiente para motor.",categoria:"Filtros"},
+  {id:56,nome:"Suporte de Placa Carro",preco:50,compat:["Ford Ka","Chevrolet Onix"],icone:"🪧",info:"Suporte para placa dianteira e traseira.",categoria:"Acessórios"},
+  {id:57,nome:"Buzina Carro",preco:90,compat:["Ford Ka","Chevrolet Onix"],icone:"📢",info:"Buzina potente.",categoria:"Elétrico"},
+  {id:58,nome:"Manete de Freio Carro",preco:70,compat:["Ford Ka","Chevrolet Onix"],icone:"✋",info:"Manete de freio confiável.",categoria:"Freios"},
+  {id:59,nome:"Cabo de Freio Carro",preco:60,compat:["Ford Ka","Chevrolet Onix"],icone:"🧵",info:"Cabo de freio resistente.",categoria:"Freios"},
+  {id:60,nome:"Cabo de Embreagem Carro",preco:65,compat:["Ford Ka","Chevrolet Onix"],icone:"🧵",info:"Cabo de embreagem durável.",categoria:"Transmissão"},
+  {id:61,nome:"Correia Dentada",preco:220,compat:["Ford Ka","Chevrolet Onix"],icone:"⛓️",info:"Correia dentada de alta qualidade.",categoria:"Motor"},
+  {id:62,nome:"Filtro de Combustível Carro",preco:75,compat:["Ford Ka","Chevrolet Onix"],icone:"🛢️",info:"Protege o motor contra impurezas.",categoria:"Filtros"},
+  {id:63,nome:"Radiador Carro",preco:500,compat:["Ford Ka","Chevrolet Onix"],icone:"❄️",info:"Radiador eficiente e durável.",categoria:"Motor"},
+  {id:64,nome:"Farol Neblina Carro",preco:200,compat:["Ford Ka","Chevrolet Onix"],icone:"💡",info:"Farol auxiliar com LED.",categoria:"Iluminação"},
+  {id:65,nome:"Filtro Ar Condicionado",preco:120,compat:["Ford Ka","Chevrolet Onix"],icone:"🌬️",info:"Filtro de ar condicionado limpo e eficaz.",categoria:"Filtros"},
+  {id:66,nome:"Coxim Motor",preco:150,compat:["Ford Ka","Chevrolet Onix"],icone:"🛠️",info:"Coxim para reduzir vibração do motor.",categoria:"Motor"},
+  {id:67,nome:"Coxim Cambio",preco:160,compat:["Ford Ka","Chevrolet Onix"],icone:"🛠️",info:"Coxim para suporte do câmbio.",categoria:"Transmissão"},
+  {id:68,nome:"Pastilha Freio Carro Premium",preco:180,compat:["Ford Ka","Chevrolet Onix"],icone:"🛑",info:"Pastilha de alta performance.",categoria:"Freios"},
+  {id:69,nome:"Bateria Selada Carro",preco:400,compat:["Ford Ka","Chevrolet Onix"],icone:"🔋",info:"Bateria sem manutenção.",categoria:"Elétrico"},
+  {id:70,nome:"Sensor de Estacionamento",preco:250,compat:["Ford Ka","Chevrolet Onix"],icone:"📡",info:"Sensor de estacionamento confiável.",categoria:"Acessórios"},
+  {id:71,nome:"Câmera de Ré",preco:320,compat:["Ford Ka","Chevrolet Onix"],icone:"📷",info:"Câmera de ré com alta definição.",categoria:"Acessórios"},
+  {id:72,nome:"Lâmpada LED Interna",preco:60,compat:["Ford Ka","Chevrolet Onix"],icone:"💡",info:"Iluminação interna LED.",categoria:"Iluminação"},
+  {id:73,nome:"Lâmpada Farol Alto",preco:80,compat:["Ford Ka","Chevrolet Onix"],icone:"💡",info:"Lâmpada para farol alto.",categoria:"Iluminação"},
+  {id:74,nome:"Lâmpada Farol Baixo",preco:80,compat:["Ford Ka","Chevrolet Onix"],icone:"💡",info:"Lâmpada para farol baixo.",categoria:"Iluminação"},
+  {id:75,nome:"Filtro Óleo Premium",preco:110,compat:["Ford Ka","Chevrolet Onix"],icone:"🛢️",info:"Filtro de óleo premium para carros.",categoria:"Filtros"},
+  {id:76,nome:"Cabo Vela Premium",preco:70,compat:["Ford Ka","Chevrolet Onix"],icone:"🧵",info:"Cabo de vela premium.",categoria:"Motor"},
+  {id:77,nome:"Escapamento Esportivo",preco:800,compat:["Ford Ka","Chevrolet Onix"],icone:"🎵",info:"Escapamento esportivo com som potente.",categoria:"Motor"},
+  {id:78,nome:"Suporte Estepe",preco:90,compat:["Ford Ka","Chevrolet Onix"],icone:"🛡️",info:"Suporte para estepe seguro.",categoria:"Acessórios"},
+  {id:79,nome:"Parachoque Dianteiro",preco:650,compat:["Ford Ka","Chevrolet Onix"],icone:"🛡️",info:"Parachoque resistente.",categoria:"Carroceria"},
+  {id:80,nome:"Parachoque Traseiro",preco:650,compat:["Ford Ka","Chevrolet Onix"],icone:"🛡️",info:"Parachoque traseiro seguro.",categoria:"Carroceria"}
+];
+
+function render(produtosRender=null){
+  let container=document.getElementById("produtos-container");
+  container.innerHTML="";
+  let produtosList=produtosRender || produtos;
+  let categorias={};
+  produtosList.forEach(p=>{
+    if(!categorias[p.categoria]) categorias[p.categoria]=[];
+    categorias[p.categoria].push(p);
+  });
+  let ulCat=document.getElementById("categorias-lista");
+  ulCat.innerHTML="";
+  for(let cat in categorias){
+    let li=document.createElement("li");
+    li.textContent=cat;
+    li.onclick=()=>scrollParaCategoria(cat);
+    ulCat.appendChild(li);
+  }
+  for(let cat in categorias){
+    let catTitle=document.createElement("div");
+    catTitle.className="categoria-title";
+    catTitle.id="cat-"+cat;
+    catTitle.textContent=cat;
+    container.appendChild(catTitle);
+    let grid=document.createElement("div");
+    grid.className="produtos";
+    categorias[cat].forEach((p,i)=>{
+      let compatStr=p.compat.join(", ");
+      let badgeHTML=p.badge ? `<div class="badge ${p.badge}">${p.badge.toUpperCase()}</div>` : "";
+      let card=document.createElement("div");
+      card.className="card tooltip";
+      card.style.animation="fadeInUp 0.5s forwards";
+      card.style.animationDelay=`${i*0.03}s`;
+      card.innerHTML=`
+        ${badgeHTML}
+        <div class="card-inner" onclick="abrirModal(${p.id})">
+          <div class="card-front">
+            <div class="icone-cat">${p.icone}</div>
+            <h3>${p.nome}</h3>
+            <div class="preco">R$ ${p.preco.toFixed(2)}</div>
+            <div class="compatibilidade">${compatStr}</div>
+            <button onclick="event.stopPropagation();add(${p.id})">Adicionar</button>
+          </div>
+          <div class="card-back">${p.info}<br>Compatível com: ${compatStr}</div>
+        </div>
+        <span class="tooltiptext">Clique no card ou "Adicionar" para mais detalhes</span>`;
+      grid.appendChild(card);
+    });
+    container.appendChild(grid);
+  }
+}
+
+function scrollParaCategoria(cat){let el=document.getElementById("cat-"+cat);if(el) el.scrollIntoView({behavior:"smooth"});}
+function add(id){let p=produtos.find(x=>x.id===id);carrinho.push(p);total+=p.preco;atualizarCarrinho();}
+function atualizarCarrinho(){let lista=document.getElementById("lista");lista.innerHTML="";carrinho.forEach(p=>{let li=document.createElement("li");li.textContent=`${p.nome} - R$ ${p.preco.toFixed(2)}`;lista.appendChild(li);});document.getElementById("total").textContent=total.toFixed(2);}
+function finalizar(){if(carrinho.length===0) return alert("Carrinho vazio!");let msg="Olá, gostaria de comprar:%0A";carrinho.forEach(p=> msg+=`- ${p.nome} - R$ ${p.preco.toFixed(2)}%0A`);msg+=`Total: R$ ${total.toFixed(2)}`;window.open(`https://wa.me/5531993365096?text=${msg}`,'_blank');}
+function abrirModal(id){let p=produtos.find(x=>x.id===id);document.getElementById("modal-title").textContent=p.nome;document.getElementById("modal-text").textContent=`${p.info}\nCompatível com: ${p.compat.join(", ")}`;document.getElementById("modal").style.display="flex";}
+function fecharModal(){document.getElementById("modal").style.display="none";}
+function pesquisar(){const termo=document.getElementById("search").value.toLowerCase();let resultado=produtos.filter(p=>p.nome.toLowerCase().includes(termo) || p.compat.some(c=> c.toLowerCase().includes(termo)));render(resultado);}
+document.getElementById("search").addEventListener("input",pesquisar);
+
+render();
+</script>
+</body>
+</html>
